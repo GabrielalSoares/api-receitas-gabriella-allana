@@ -62,4 +62,12 @@ receitas: List(Receita) = []
 @app.get("/receitas")
 def get_todas_receitas():
     return receitas
+
+@app.post("/receitas", response_model=Receita, status_code=201)
+def create_receita(dados: Receita):
+    nova_receita = dados
+
+    receitas.append(nova_receita)
+
+    return nova_receita
     
