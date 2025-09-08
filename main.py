@@ -1,13 +1,9 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
 
 app = FastAPI(title='API da Allana e Gabriela')
 
-@app.get("/")
-def hello():
-    return{"message":"Hello World!"}
-
-from pydantic import BaseModel
-from typing import List
 
 class Receita(BaseModel) :
     nome: str
