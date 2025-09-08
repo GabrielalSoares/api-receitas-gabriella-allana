@@ -1,3 +1,11 @@
+from fastapi import FastAPI
+
+app = FastAPI(title='API da Allana e Gabriela')
+
+@app.get("/")
+def hello():
+    return{"message":"Hello World!"}
+
 from pydantic import BaseModel
 from typing import List
 
@@ -6,7 +14,7 @@ class Receita(BaseModel) :
     ingredientes: List[str]
     modo_de_preparo: str
 
-...
+'''
 receitas = [
     {
         'nome': 'brigaeiro',
@@ -44,7 +52,7 @@ receitas = [
         'modo de preparo':['Misture 50 g de farinha, fermento e um pouco de água.Deixe descansar por 20 minutos. Adicione os demais ingredientes e amasse até obter uma massa bem macia.Corte em 3 partes iguais, forme 3 bolas e cubra-as com um pano.Deixe descansar por 1 hora. Abra a massa com um rolo até obter 25 cm de diâmetro. Espalhe o molho de tomate por cima e leve para assar em forno pré-aquecido, a 180ºC, por 15 minutos.Retire e deixe esfriar.Espalhe a linguiça sobre o molho de tomate e cubra com a cebola e o tomate.Coloque o queijo mussarela por baixo da linguiça.Decore com a azeitona e orégano.Retorne ao forno por mais 10 minutos ou até a mussarela dourar.']
     }
   ]
-...
+'''
     
 @app.get("/")
 def hello():
