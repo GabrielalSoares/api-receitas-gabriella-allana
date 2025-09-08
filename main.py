@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 
@@ -61,7 +61,7 @@ def get_receita(receita:str):
             return r
     return {"error": "Receita não encontrada"}
 
-receitas: List(Receita) = []
+receitas: List[Receita] = []
 
 @app.get("/receitas")
 def get_todas_receitas():
@@ -75,4 +75,10 @@ def create_receita(dados: Receita):
 
     return nova_receita
     
-    
+@app.get("/receitas/id/{id}")
+def get_receitas(id: int):
+    for r in receitas:
+        if r.id == id:
+            return r
+        raise HTTPExcenption(status_code=404, detail="Receita não encontrada")
+
