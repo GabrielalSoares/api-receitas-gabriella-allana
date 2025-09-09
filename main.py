@@ -77,9 +77,12 @@ def get_todas_receitas():
 
 @app.post("/receitas", response_model=Receita, status_code=201)
 def create_receita(dados: CreateReceita):
-    #como gerar o ID
-    
-    nova_receita = Receita(id=, nome=dados.nome, ingredientes=dados.ingredientes, modo_de_preparo=dados.modo_de_preparo)
+    if not receitas:
+        novo_id = 1
+    else:
+        novo_id = receitas[-1].id + 1
+        
+    nova_receita = Receita(id=novo_id, nome=dados.nome, ingredientes=dados.ingredientes, modo_de_preparo=dados.modo_de_preparo)
 
     receitas.append(nova_receita)
 
