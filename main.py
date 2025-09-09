@@ -6,9 +6,17 @@ app = FastAPI(title='API da Allana e Gabriela')
 
 
 class Receita(BaseModel) :
+    id: int
     nome: str
     ingredientes: List[str]
     modo_de_preparo: str
+
+class CreateReceita(BaseModel) :
+    nome: str
+    ingredientes: List[str]
+    modo_de_preparo: str
+
+receitas: List[Receita] = []
 
 '''
 receitas = [
@@ -61,15 +69,17 @@ def get_receita(receita:str):
             return r
     return {"error": "Receita não encontrada"}
 
-receitas: List[Receita] = []
+
 
 @app.get("/receitas")
 def get_todas_receitas():
     return receitas
 
 @app.post("/receitas", response_model=Receita, status_code=201)
-def create_receita(dados: Receita):
-    nova_receita = dados
+def create_receita(dados: CreateReceita):
+    #como gerar o ID
+    
+    nova_receita = Receita(id=, nome=dados.nome, ingredientes=dados.ingredientes, modo_de_preparo=dados.modo_de_preparo)
 
     receitas.append(nova_receita)
 
@@ -80,5 +90,23 @@ def get_receitas(id: int):
     for r in receitas:
         if r.id == id:
             return r
-        raise HTTPExcenption(status_code=404, detail="Receita não encontrada")
+        raise HTTPException(status_code=404, detail="Receita não encontrada")
 
+@app.put("/receitas/{id}")
+def update_receita(id: int, dados: CreateReceita):
+
+    for i in range(len(receitas)):
+
+        if receitas[i].id == id:
+            receitas_atualizada = Receita(
+                id=id,
+                nome=dados.nome,
+                ingredientes=dados.ingredientes,
+                modo_de_preparo=dados.modo_de_preparo,
+            )
+
+            receitas[i] = (receitas_atualizada)
+            return receitas_atualizada
+
+    return {"mensagem": "Receita não encontrada"}
+            
