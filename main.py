@@ -77,14 +77,16 @@ def get_todas_receitas():
 
 @app.post("/receitas", response_model=Receita, status_code=201)
 def create_receita(dados: CreateReceita):
-    if not receitas:
-        novo_id = 1
-    else:
-        novo_id = receitas[-1].id + 1
-        
-    nova_receita = Receita(id=novo_id, nome=dados.nome, ingredientes=dados.ingredientes, modo_de_preparo=dados.modo_de_preparo)
+    global proximo_id
 
+    for r in receitas:
+        if r.nome.lower() == dados.nome.lower():
+            raise HTTPException(status_code=400,detail="Já existe uma receita com esse nome")
+
+    nova_receita=Receita(id = proximo_id , nome = dados.nome, ingredientes= dados.ingredientes, modo_de_preparo= dados.modo_de_preparo)
+    
     receitas.append(nova_receita)
+    proximo_id+= 1
 
     return nova_receita
     
@@ -95,7 +97,7 @@ def get_receitas(id: int):
             return r
         raise HTTPException(status_code=404, detail="Receita não encontrada")
 
-@app.put("/receitas/{id}")
+@app.put("/receitas/{id}",response_model=Receita)
 def update_receita(id: int, dados: CreateReceita):
 
     for i in range(len(receitas)):
@@ -110,6 +112,7 @@ def update_receita(id: int, dados: CreateReceita):
 
             receitas[i] = (receitas_atualizada)
             return receitas_atualizada
+            raise HTTPException(status_code=404, detail= "Receita não encontrada")
 
     return {"mensagem": "Receita não encontrada"}
             
