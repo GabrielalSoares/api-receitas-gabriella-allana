@@ -113,6 +113,23 @@ def update_receita(id: int, dados: CreateReceita):
             receitas[i] = (receitas_atualizada)
             return receitas_atualizada
             raise HTTPException(status_code=404, detail= "Receita não encontrada")
+    
+     for receita in receitas:
+        if receita["id"] != id and receita["name"].lower() == dados.name.lower():
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                                detail=f"O nome da receita '{dados.name}' já existe.")
 
+    if not dados.name.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="O nome da receita não pode ser vazio.")
+    if not dados.modo_de_preparo.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="O modo de preparo não pode ser vazio.")
+    for ingrediente in dados.ingredientes:
+        if not ingrediente.strip():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail="Um ou mais ingredientes não podem ser vazios.")
+                                
+                                                           
     return {"mensagem": "Receita não encontrada"}
             
