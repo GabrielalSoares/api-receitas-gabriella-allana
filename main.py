@@ -100,12 +100,11 @@ def get_receitas(id: int):
 @app.put("/receitas/{id}",response_model=Receita)
 def update_receita(id: int, dados: CreateReceita):
 
+   if not 1 <= len(dados.ingredientes) <= 20:
+        raise HTTPException(status_code=404,detail="A receita deve ter entre 1 e 20 ingredientes.")
 
    if not 2 <= len(dados.nome) <= 50:
         raise HTTPException(status_code=404,detail="O nome da receita deve ter entre 2 e 50 caracteres.")
-
-    if not 1 <= len(dados.ingredientes) <= 20:
-        raise HTTPException(status_code=404,detail="A receita deve ter entre 1 e 20 ingredientes.")
 
     if not dados.nome.strip():
         raise HTTPException(status_code=404,detail="O nome da receita não pode ser vazio.")
