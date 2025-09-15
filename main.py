@@ -100,6 +100,29 @@ def get_receitas(id: int):
 @app.put("/receitas/{id}",response_model=Receita)
 def update_receita(id: int, dados: CreateReceita):
 
+
+   if not 2 <= len(dados.nome) <= 50:
+        raise HTTPException(status_code=404,detail="O nome da receita deve ter entre 2 e 50 caracteres.")
+
+    if not 1 <= len(dados.ingredientes) <= 20:
+        raise HTTPException(status_code=404,detail="A receita deve ter entre 1 e 20 ingredientes.")
+
+    if not dados.nome.strip():
+        raise HTTPException(status_code=404,detail="O nome da receita não pode ser vazio.")
+
+    if not dados.modo_de_preparo.strip():
+        raise HTTPException(status_code=404,detail="O modo de preparo não pode ser vazio.")
+
+    for ingrediente in dados.ingredientes:
+        if not ingrediente.strip():
+            raise HTTPException(status_code=404, detail="Um ou mais ingredientes não podem ser vazios.")
+    
+
+     for i in range(len(receitas)):
+        if receitas[i].id != id and receitas[i].nome.lower() == dados.nome.lower():
+            raise HTTPException(status_code=409,detail=f"O nome da receita '{dados.nome}' já existe.")
+
+
     for i in range(len(receitas)):
 
         if receitas[i].id == id:
@@ -113,23 +136,9 @@ def update_receita(id: int, dados: CreateReceita):
             receitas[i] = (receitas_atualizada)
             return receitas_atualizada
             raise HTTPException(status_code=404, detail= "Receita não encontrada")
-    
-     for receita in receitas:
-        if receita["id"] != id and receita["name"].lower() == dados.name.lower():
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                detail=f"O nome da receita '{dados.name}' já existe.")
 
-    if not dados.name.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="O nome da receita não pode ser vazio.")
-    if not dados.modo_de_preparo.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="O modo de preparo não pode ser vazio.")
-    for ingrediente in dados.ingredientes:
-        if not ingrediente.strip():
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="Um ou mais ingredientes não podem ser vazios.")
-                                
-                                                           
+       
+    
     return {"mensagem": "Receita não encontrada"}
-            
+
+      
