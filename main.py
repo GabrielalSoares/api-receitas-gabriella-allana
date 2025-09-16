@@ -123,9 +123,13 @@ def update_receita(id: int, dados: CreateReceita):
 def deletar_receita(id: int):
 
     for i in range(len(receitas)):
+        if receitas == "":
+            return{"não existe receita para apagar"}
+           
         if receitas[i].id == id:
+            rct=receitas[i].nome
             receitas.pop(i)
-            return {"mensagem": "Receita deletada"}
+            return {"mensagem": "Receita "+rct+" deletada"}
     
     return {"mensagem": "Receita não encontrada"}
 
