@@ -50,10 +50,10 @@ def create_receita(dados: CreateReceita):
         if r.nome.lower() == dados.nome.lower():
             return {"mensagem":"Já existe uma receita com esse nome"}
 
-         if not (1 <= len(dados.ingredientes) <= 20):
+        if not (1 <= len(dados.ingredientes) <= 20):
             return {"mensagem": "A receita deve ter de 1 a 20 ingredientes"}
 
-         if not (2 <= len(dados.nome) <= 50):
+        if not (2 <= len(dados.nome) <= 50):
             return {"mensagem": "O nome da receita deve ter de 2 a 50 caracteres"}
 
     proximo_id+= 1
