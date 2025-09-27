@@ -67,7 +67,6 @@ def create_receita(dados: CreateReceita):
 def update_receita(id: int, dados: CreateReceita):
 
     for i in range(len(receitas)):
-
         if receitas[i].id == id:
            for r in receitas:
              if r.nome.lower() == dados.nome.lower():
@@ -82,20 +81,14 @@ def update_receita(id: int, dados: CreateReceita):
              if not (2 <= len(dados.nome) <= 50):
                 return {"mensagem": "O nome da receita deve ter entre 2 e 50 caracteres"}
 
-            receitas_atualizada = Receita(
-                id=id,
-                nome=dados.nome,
-                ingredientes=dados.ingredientes,
-                modo_de_preparo=dados.modo_de_preparo,
-            )
-            for j in range(len(receitas)):
-                if receitas[j].nome==receitas_atualizada.nome:
-                    return {"mensagem":"receita já existe"}
-            if receitas_atualizada.nome=="":
-                return{"digite algo"}
+            receitas_atualizada = Receita( id=id, nome=dados.nome, ingredientes=dados.ingredientes, modo_de_preparo=dados.modo_de_preparo)
+            receitas[i]= receitas_atualizada
+            return receitas_atualizada
+          
+      return {"mensagem":"Receita não encontrada"}
             
 
-@app.delete("/receitas/{ìd}")
+@app.delete("/receitas/{id}")
 def deletar_receita(id: int):
 
     for i in range(len(receitas)):
