@@ -1,24 +1,14 @@
+from http import HTTPStatus
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
+from .schema import CreateReceita, Receita
 
 app = FastAPI(title='API da Allana e Gabriela')
 
 
-class Receita(BaseModel):
-    id: int
-    nome: str
-    ingredientes: List[str]
-    modo_de_preparo: str
-
-
-class CreateReceita(BaseModel):
-    nome: str
-    ingredientes: List[str]
-    modo_de_preparo: str
-
-
 receitas: List[Receita] = []
+
 proximo_id = 0
 
 
@@ -28,6 +18,7 @@ def hello():
 
 
 @app.get("/receitas")
+@app.get("/receitas", status_code=HTTPStatus.Ok)
 def get_todas_receitas():
     return receitas
 
