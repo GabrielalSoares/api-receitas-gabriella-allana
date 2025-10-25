@@ -75,7 +75,7 @@ def update_receita(id: int, dados: CreateReceita):
                     raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe uma receita com esse nome")
                     
             if dados.nome == "":
-                return {"mensagem": "O nome não pode estar vazio"}
+                raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="O nome não pode estar vazio")
 
             if not (1 <= len(dados.ingredientes) <= 20):
                 raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="A receita deve ter de 1 a 20 ingredientes")
@@ -99,7 +99,7 @@ def update_receita(id: int, dados: CreateReceita):
 @app.delete("/receitas/{id}" , response_model=Receita, status_code=HTTPStatus.Ok)
 def deletar_receita(id: int):
     if not receitas:
-        return {"mensagem": "Não existe receita para apagar"}
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Não existe receita para apagar")
 
     for i in range(len(receitas)):
         if receitas[i].id == id:
