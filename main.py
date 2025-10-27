@@ -2,7 +2,7 @@ from http import HTTPStatus
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
-from schema import CreateReceita, Receita
+from .schema import CreateReceita, Receita
 
 app = FastAPI(title='API da Allana e Gabriela')
 
