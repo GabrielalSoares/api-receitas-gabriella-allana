@@ -2,7 +2,7 @@ from http import HTTPStatus
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
-from .schema import CreateReceita, Receita
+from schema import CreateReceita, Receita
 
 app = FastAPI(title='API da Allana e Gabriela')
 
@@ -21,7 +21,7 @@ def hello():
 def get_todas_receitas():
     return receitas
 
-@app.get("/receitas/{receita}", response_model=Receita, status_code=HTTPStatus.Ok)
+@app.get("/receitas/{receita}", response_model=Receita, status_code=HTTPStatus.OK)
 def get_receita(receita: str):
     for r in receitas:
         if r.nome.lower() == receita.lower():
@@ -29,7 +29,7 @@ def get_receita(receita: str):
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
 
 
-@app.get("/receitas/id/{id}" , response_model=Receita, status_code=HTTPStatus.Ok)
+@app.get("/receitas/id/{id}" , response_model=Receita, status_code=HTTPStatus.OK)
 def get_receitas(id: int):
     for r in receitas:
         if r.id == id:
@@ -37,7 +37,7 @@ def get_receitas(id: int):
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
 
 
-@app.post("/receitas", response_model=Receita, status_code=HTTPStatus.Ok)
+@app.post("/receitas", response_model=Receita, status_code=HTTPStatus.OK)
 def create_receita(dados: CreateReceita):
     global proximo_id
 
@@ -64,7 +64,7 @@ def create_receita(dados: CreateReceita):
     return nova_receita
 
 
-@app.put("/receitas/{id}" , response_model=Receita, status_code=HTTPStatus.Ok)
+@app.put("/receitas/{id}" , response_model=Receita, status_code=HTTPStatus.OK)
 def update_receita(id: int, dados: CreateReceita):
     for i in range(len(receitas)):
         if receitas[i].id == id:
@@ -94,7 +94,7 @@ def update_receita(id: int, dados: CreateReceita):
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
 
 
-@app.delete("/receitas/{id}" , response_model=Receita, status_code=HTTPStatus.Ok)
+@app.delete("/receitas/{id}" , response_model=Receita, status_code=HTTPStatus.OK)
 def deletar_receita(id: int):
     if not receitas:
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Não existe receita para apagar")
@@ -104,5 +104,5 @@ def deletar_receita(id: int):
             rct = receitas[i].nome
             receitas.pop(i)
             return {"mensagem":f"Receita {rct} deletada"}
-
+            
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")

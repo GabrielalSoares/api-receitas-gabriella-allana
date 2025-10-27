@@ -7,8 +7,8 @@ class CreateReceita(BaseModel):
     ingredientes: List[str]
     modo_de_preparo: str
 
-    class Receita(BaseModel):
-        id: int
-        nome: str
-        ingredientes: List[str]
-        modo_de_preparo: str
+class Receita(BaseModel):
+    id: int
+    nome: str
+    ingredientes: List[str]
+    modo_de_preparo: str
