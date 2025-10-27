@@ -20,7 +20,7 @@ def hello():
 @app.get("/receitas", response_model=List[Receita], status_code=HTTPStatus.OK)
 def get_todas_receitas():
     return receitas
-    
+
 @app.get("/receitas/{receita}", response_model=Receita, status_code=HTTPStatus.Ok)
 def get_receita(receita: str):
     for r in receitas:

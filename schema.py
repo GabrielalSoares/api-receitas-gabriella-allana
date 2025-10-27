@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import list
+from typing import List
 
 
 class CreateReceita(BaseModel):
