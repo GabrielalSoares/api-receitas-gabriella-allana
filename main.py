@@ -94,15 +94,17 @@ def update_receita(id: int, dados: CreateReceita):
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
 
 
-@app.delete("/receitas/{id}" , response_model=Receita, status_code=HTTPStatus.OK)
+@app.delete("/receitas/{id}", status_code=HTTPStatus.OK) # <--- REMOVIDO "response_model=Receita"
 def deletar_receita(id: int):
     if not receitas:
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Não existe receita para apagar")
 
     for i in range(len(receitas)):
         if receitas[i].id == id:
-            rct = receitas[i].nome
+            rct_nome = receitas[i].nome
             receitas.pop(i)
-            return {"mensagem":f"Receita {rct} deletada"}
+            return {"mensagem": f"Receita {rct_nome} deletada"}
             
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
+            
+
