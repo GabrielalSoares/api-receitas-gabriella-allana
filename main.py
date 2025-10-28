@@ -2,12 +2,14 @@ from http import HTTPStatus
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
-from schema import CreateReceita, Receita
+from schema import CreateReceita, Receita, Usuario, BaseUsuario, UsuarioPublic
 
 app = FastAPI(title='API da Allana e Gabriela')
 
 
 receitas: List[Receita] = []
+usuarios: List[Usuario] = []
+
 
 proximo_id = 0
 
