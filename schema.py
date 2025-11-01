@@ -24,9 +24,7 @@ class BaseUsuario(BaseModel):
     email: str
     senha: str
 
-class UsuarioPublic(BseModel):
+class UsuarioPublic(BaseModel):
     id: int
     nome_usuario: str
     email: str
-
-    
