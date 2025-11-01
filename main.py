@@ -1,6 +1,5 @@
 from http import HTTPStatus
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from typing import List
 from schema import CreateReceita, Receita, Usuario, BaseUsuario, UsuarioPublic
 
@@ -21,7 +20,6 @@ def hello():
     return {"title": "Livro de receitas"}
 
 
-# Rotas de Receitas (Mantidas)
 @app.get("/receitas", response_model=List[Receita], status_code=HTTPStatus.OK)
 def get_todas_receitas():
     return receitas
@@ -42,13 +40,13 @@ def get_receitas(id: int):
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
 
 
-@app.post("/receitas", response_model=Receita, status_code=HTTPStatus.OK)
+@app.post("/receitas", response_model=Receita, status_code=HTTPStatus.CREATED) # Status code ajustado para CREATED
 def create_receita(dados: CreateReceita):
     global proximo_id
 
     for r in receitas:
         if r.nome.lower() == dados.nome.lower():
-             raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe uma receita com esse nome")
+            raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe uma receita com esse nome")
 
 
     if not (1 <= len(dados.ingredientes) <= 20):
@@ -74,7 +72,7 @@ def update_receita(id: int, dados: CreateReceita):
     for i in range(len(receitas)):
         if receitas[i].id == id:
             for r in receitas:
-                if r.nome.lower() == dados.nome.lower() and r.id != id: # Corrigido: verifica se o nome é o mesmo, mas o ID é diferente
+                if r.nome.lower() == dados.nome.lower() and r.id != id:
                     raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe uma receita com esse nome")
                     
             if dados.nome == "":
@@ -113,8 +111,6 @@ def deletar_receita(id: int):
     raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Receita não encontrada")
 
 
-
-
 def get_usuario_by_email(email: str) -> Usuario | None:
     for u in usuarios:
         if u.email.lower() == email.lower():
@@ -134,15 +130,15 @@ def get_usuario_by_nome(nome_usuario: str) -> Usuario | None:
     return None
 
 
+
 @app.post("/usuarios", status_code=HTTPStatus.CREATED, response_model=UsuarioPublic)
 def create_usuario(dados: BaseUsuario):
     global proximo_id_usuario
 
     
-    if get_usuario_email(dados.email):
-        raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe um usuário com este email.")
+    if get_usuario_by_email(dados.email):
+        raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe um usuário com este email.") [cite: 35]
 
-    
     if not any(char.isalpha() for char in dados.senha) or not any(char.isdigit() for char in dados.senha):
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="A senha deve conter letras e números.")
 
@@ -165,7 +161,7 @@ def get_todos_usuarios():
 
 @app.get("/usuarios/{nome_usuario}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
 def get_usuario_por_nome(nome_usuario: str):
-    usuario = get_usuario_nome(nome_usuario)
+    usuario = get_usuario_by_nome(nome_usuario)
     if not usuario:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
     return usuario
@@ -173,7 +169,7 @@ def get_usuario_por_nome(nome_usuario: str):
 
 @app.get("/usuarios/id/{id}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
 def get_usuario_por_id(id: int):
-    usuario = get_usuario_id(id)
+    usuario = get_usuario_by_id(id)
     if not usuario:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
     return usuario
@@ -181,12 +177,12 @@ def get_usuario_por_id(id: int):
 
 @app.put("/usuarios/{id}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
 def update_usuario(id: int, dados: BaseUsuario):
-    usuario_exist = get_usuario_id(id)
+    usuario_exist = get_usuario_by_id(id)
     if not usuario_exist:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
 
     
-    usuario_mesmo_email = get_usuario_email(dados.email)
+    usuario_mesmo_email = get_usuario_by_email(dados.email)
     if usuario_mesmo_email and usuario_mesmo_email.id != id:
         raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe outro usuário com este email.")
 
