@@ -7,4 +7,4 @@ _pycache_/
 
 .vscode/
 
-
+ .env
