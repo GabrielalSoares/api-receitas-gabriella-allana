@@ -9,11 +9,11 @@ table_registry = registry()
 class User:
     __tablename__ = 'users'
 
- id: Mapped[int] = mapped_column(init=False, primary_key=True)
- nome_usuario: Mapped[str]= mapped_clumn(unique=True)
- senha: Mapped[str]
- email: Mapped[str] = mapped_column(unique=True)
- created_at: Mapped[datetime] = mapped_column(
+    id: Mapped[int] = mapped_column(init=False, primary_key=True)
+    nome_usuario: Mapped[str]= mapped_column(unique=True)
+    senha: Mapped[str]
+    email: Mapped[str] = mapped_column(unique=True)
+    created_at: Mapped[datetime] = mapped_column(
     init=False, server_default=func.now()
- )
+    )
     
