@@ -1,7 +1,14 @@
+from datetime import datetime
 from http import HTTPStatus
 from fastapi import FastAPI, HTTPException
 from typing import List
 from schema import CreateReceita, Receita, Usuario, BaseUsuario, UsuarioPublic
+from config import settings
+from models import User 
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from database import get_session
+from models import User
 
 
 app = FastAPI(title='API da Allana e Gabriela')
@@ -132,8 +139,36 @@ def get_usuario_by_nome(nome_usuario: str) -> Usuario | None:
 
 
 @app.post("/usuarios", status_code=HTTPStatus.CREATED, response_model=UsuarioPublic)
-def create_usuario(dados: BaseUsuario):
-    global proximo_id_usuario
+def create_usuario(dados: BaseUsuario, session: Session = Depends(get_session)):
+    db__user = session.scalar(
+   select(User).where(
+        (User.nome_usuario == dados.nome_usuario) (User.email == daddos.email)
+   )
+ )
+
+  if db__user:
+    if db_user.nome_usuario == daddos.nome_usuario:
+        raise HTTPException (
+            status_code=HTTPStatus>CONFLICT,
+            datail='Nome de usário já existe',
+        )
+        elif db_user.email == dados.email:
+            raise HTTPException(
+                status_code=HTTPStatus.CONFLICT,
+                detail='Email já existe',
+
+            )
+        db_user = User(
+        nome_usuario=dados.nome_usuario, senha=dados.senha, email=dados.email
+         )
+        
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+
+        return db_user
+
+"""    global proximo_id_usuario
 
     
     if get_usuario_by_email(dados.email):
@@ -152,7 +187,7 @@ def create_usuario(dados: BaseUsuario):
 
     usuarios.append(novo_usuario)
     return novo_usuario
-
+"""
 
 @app.get("/usuarios", status_code=HTTPStatus.OK, response_model=List[UsuarioPublic])
 def get_todos_usuarios():
