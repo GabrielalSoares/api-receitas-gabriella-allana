@@ -2,13 +2,14 @@ from datetime import datetime
 from http import HTTPStatus
 from typing import List
 from fastapi import FastAPI, HTTPException, Depends
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError 
 from schema import CreateReceita, Receita, BaseUsuario, UsuarioPublic
 from config import settings
 from models import User
 from database import get_session
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError 
+
 
 app = FastAPI(title='API de receitas')
 
