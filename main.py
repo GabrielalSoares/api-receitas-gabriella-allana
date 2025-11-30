@@ -190,24 +190,36 @@ def create_usuario(dados: BaseUsuario, session: Session = Depends(get_session)):
 """
 
 @app.get("/usuarios", status_code=HTTPStatus.OK, response_model=List[UsuarioPublic])
-def get_todos_usuarios():
-    return usuarios
+def get_todos_usuarios(
+    skip: int = 0, limit: int = 100, session: Session = Depends(get_session)
+ ):
+    users = session.scalars(select(User).offset(skip).limit(limit)).all()
+
+    return users
 
 
 @app.get("/usuarios/{nome_usuario}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
-def get_usuario_por_nome(nome_usuario: str):
-    usuario = get_usuario_by_nome(nome_usuario)
-    if not usuario:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
-    return usuario
+def get_usuario_por_nome(nome_usuario: str, session: Session = Depends(get_session)):
+    db_user = session.scalar(
+        select(User).where((User.nome_usuario == nome_usuario))
+    )
+    if db__user:
+        return db__user
+
+    raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
+    
 
 
 @app.get("/usuarios/id/{id}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
-def get_usuario_por_id(id: int):
-    usuario = get_usuario_by_id(id)
-    if not usuario:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
-    return usuario
+def get_usuario_por_id(id: int, session: Session = Depends(get_session)):
+    db__user = session.scalar(
+        select(User).where((User.id == id))
+    )
+    if db__user:
+        return db__user
+
+    raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
+  
 
 
 @app.put("/usuarios/{id}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
