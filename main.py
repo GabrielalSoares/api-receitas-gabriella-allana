@@ -149,15 +149,15 @@ def create_usuario(dados: BaseUsuario, session: Session = Depends(get_session)):
   if db__user:
     if db_user.nome_usuario == daddos.nome_usuario:
         raise HTTPException (
-            status_code=HTTPStatus>CONFLICT,
-            datail='Nome de usário já existe',
+            status_code=HTTPStatus.CONFLICT,
+            detail='Nome de usário já existe',
         )
         elif db_user.email == dados.email:
             raise HTTPException(
                 status_code=HTTPStatus.CONFLICT,
                 detail='Email já existe',
-
-            )
+             )
+        
         db_user = User(
         nome_usuario=dados.nome_usuario, senha=dados.senha, email=dados.email
          )
