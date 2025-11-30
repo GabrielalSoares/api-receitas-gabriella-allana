@@ -223,44 +223,41 @@ def get_usuario_por_id(id: int, session: Session = Depends(get_session)):
 
 
 @app.put("/usuarios/{id}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
-def update_usuario(id: int, dados: BaseUsuario):
-    usuario_exist = get_usuario_by_id(id)
-    if not usuario_exist:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
-
+def update_usuario(id: int, dados: BaseUsuario,  session: Session = Depends(get_session)):
     
-    usuario_mesmo_email = get_usuario_by_email(dados.email)
-    if usuario_mesmo_email and usuario_mesmo_email.id != id:
-        raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="Já existe outro usuário com este email.")
-
+    db__user = session.scalar(select(User).where(User.id == id))
+    if not db_user:
+        raise HTTPException(
+        status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado."
+        )
     
-    if not any(char.isalpha() for char in dados.senha) or not any(char.isdigit() for char in dados.senha):
-        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="A senha deve conter letras e números.")
+    try: 
+        db_user.nome_usuario = dados.nome_usuario
+        db_user.senha = dados.senha
+        db_user.email = dados.email
+        session.commit()
+        session.refresh(db__user)
 
-    for i in range(len(usuarios)):
-        if usuarios[i].id == id:
-            usuario_atualizado = Usuario(
-                id=id,
-                nome_usuario=dados.nome_usuario,
-                email=dados.email,
-                senha=dados.senha
+        return db_user
+
+    except IntegrityError:
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT, 
+            detail='Nome de usuário ou Email já existe.'
             )
-            usuarios[i] = usuario_atualizado
-            return usuario_atualizado
-    
-    
-    raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Erro ao atualizar usuário.")
 
 
 @app.delete("/usuarios/{id}", status_code=HTTPStatus.OK, response_model=UsuarioPublic)
-def delete_usuario(id: int):
-    usuario_a_deletar = get_usuario_by_id(id)
-    if not usuario_a_deletar:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado.")
+def delete_usuario(id: int, session: Session = Depends(get_session)):
+    db_user = sesion.scalar(select(User).where(User.id == id))
 
-    for i in range(len(usuarios)):
-        if usuarios[i].id == id:
-            return usuarios.pop(i)
-    
-    
-    raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Erro ao deletar usuário.")
+    if not db_user:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, 
+            detail="Usuário não encontrado."
+        )
+
+   session.delete(db__user)
+   session.commit()
+
+   return db__user
