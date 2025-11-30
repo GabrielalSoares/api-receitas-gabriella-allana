@@ -15,7 +15,7 @@ app = FastAPI(title='API da Allana e Gabriela')
 
 
 receitas: List[Receita] = []
-usuarios: List[Usuario] = []
+
 
 
 proximo_id = 0
