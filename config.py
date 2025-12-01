@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic settings import BaseSettings
 
 class Settings(BaseSettings):
     app_name: str = "API de receita"
