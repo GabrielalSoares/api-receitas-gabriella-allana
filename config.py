@@ -1,4 +1,4 @@
-from pydantic settings import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     app_name: str = "API de receita"
@@ -8,4 +8,4 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-        settings = Settings()
+settings = Settings()
